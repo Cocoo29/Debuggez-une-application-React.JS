@@ -13,64 +13,72 @@ const EventList = () => {
   const { data, error } = useData();
   const [type, setType] = useState();
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Tri des événements par mois
+  const sortedEvents = data?.events.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  // Filtrage des événements par type et pagination
   const filteredEvents = (
-    (!type
-      ? data?.events
-      : data?.events) || []
+      (!type ? sortedEvents : sortedEvents) || []
   ).filter((event, index) => {
     if (
-      (currentPage - 1) * PER_PAGE <= index &&
-      PER_PAGE * currentPage > index
+        (currentPage - 1) * PER_PAGE <= index &&
+        PER_PAGE * currentPage > index
     ) {
       return true;
     }
     return false;
   });
+
   const changeType = (evtType) => {
     setCurrentPage(1);
     setType(evtType);
   };
+
   const pageNumber = Math.floor((filteredEvents?.length || 0) / PER_PAGE) + 1;
   const typeList = new Set(data?.events.map((event) => event.type));
+
+  
   return (
     <>
       {error && <div>An error occured</div>}
       {data === null ? (
-        "loading"
+          "loading"
       ) : (
-        <>
-          <h3 className="SelectTitle">Catégories</h3>
-          <Select
-            selection={Array.from(typeList)}
-            onChange={(value) => (value ? changeType(value) : changeType(null))}
-          />
-          <div id="events" className="ListContainer">
-            {filteredEvents.map((event) => (
-              <Modal key={event.id} Content={<ModalEvent event={event} />}>
-                {({ setIsOpened }) => (
-                  <EventCard
-                    onClick={() => setIsOpened(true)}
-                    imageSrc={event.cover}
-                    title={event.title}
-                    date={new Date(event.date)}
-                    label={event.type}
-                  />
-                )}
-              </Modal>
-            ))}
-          </div>
-          <div className="Pagination">
-            {[...Array(pageNumber || 0)].map((_, n) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <a key={n} href="#events" onClick={() => setCurrentPage(n + 1)}>
-                {n + 1}
-              </a>
-            ))}
-          </div>
-        </>
+          <>
+            <h3 className="SelectTitle">Catégories</h3>
+            <Select
+                selection={Array.from(typeList)}
+                onChange={(value) => (value ? changeType(value) : changeType(null))}
+            />
+            <div id="events" className="ListContainer">
+              {filteredEvents.map((event) => (
+                  <Modal key={event.id} Content={<ModalEvent event={event} />}>
+                    {({ setIsOpened }) => (
+                        <EventCard
+                            onClick={() => setIsOpened(true)}
+                            imageSrc={event.cover}
+                            title={event.title}
+                            date={new Date(event.date)}
+                            label={event.type}
+                        />
+                    )}
+                  </Modal>
+              ))}
+            </div>
+            <div className="Pagination">
+              {[...Array(pageNumber || 0)].map((_, n) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <a key={n} href="#events" onClick={() => setCurrentPage(n + 1)}>
+                    {n + 1}
+                  </a>
+              ))}
+            </div>
+          </>
       )}
     </>
-  );
+);
 };
 
 export default EventList;
+ 

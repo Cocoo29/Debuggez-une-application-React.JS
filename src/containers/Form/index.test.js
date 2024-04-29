@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import Form from "./index";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import Form from "./index"; 
 
 describe("When Events is created", () => {
   it("a list of event card is displayed", async () => {
@@ -14,6 +14,7 @@ describe("When Events is created", () => {
     it("the success action is called", async () => {
       const onSuccess = jest.fn();
       render(<Form onSuccess={onSuccess} />);
+
       fireEvent(
         await screen.findByTestId("button-test-id"),
         new MouseEvent("click", {
@@ -22,8 +23,10 @@ describe("When Events is created", () => {
         })
       );
       await screen.findByText("En cours");
-      await screen.findByText("Envoyer");
+      await waitFor(() => screen.findByText("Envoyer"), {timeout:1250}); // adaptation au mockContactApi de Form.js
+
       expect(onSuccess).toHaveBeenCalled();
     });
   });
+  
 });

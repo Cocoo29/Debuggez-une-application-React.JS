@@ -1,6 +1,7 @@
+/* eslint-disable prefer-destructuring */
+import React from 'react';
 import Menu from "../../containers/Menu";
 import ServiceCard from "../../components/ServiceCard";
-import EventCard from "../../components/EventCard";
 import PeopleCard from "../../components/PeopleCard";
 
 import "./style.scss";
@@ -10,11 +11,26 @@ import Logo from "../../components/Logo";
 import Icon from "../../components/Icon";
 import Form from "../../containers/Form";
 import Modal from "../../containers/Modal";
+
+import EventCard from "../../components/EventCard";
+import ModalEvent from "../../containers/ModalEvent";
+
 import { useData } from "../../contexts/DataContext";
 
 const Page = () => {
-  const {last} = useData()
-  return <>
+  const { data, error } = useData();
+  let last = {};
+
+  if (data) {
+    const byDateDesc = data?.events?.sort((evtA, evtB) =>
+    new Date(evtA.date) < new Date(evtB.date) ? 1 : -1
+    );
+    last = byDateDesc[0];
+  } else if (error) {
+    return <p>Une erreur s&apos;est produite lors du chargement des données: {error}</p>
+  }
+
+  return (<>
     <header>
       <Menu />
     </header>
@@ -22,7 +38,7 @@ const Page = () => {
       <section className="SliderContainer">
         <Slider />
       </section>
-      <section className="ServicesContainer">
+      <section className="ServicesContainer" id="nos-services">
         <h2 className="Title">Nos services</h2>
         <p>Nous organisons des événements sur mesure partout dans le monde</p>
         <div className="ListContainer">
@@ -51,11 +67,11 @@ const Page = () => {
           </ServiceCard>
         </div>
       </section>
-      <section className="EventsContainer">
+      <section className="EventsContainer" id="nos-realisations">
         <h2 className="Title">Nos réalisations</h2>
         <EventList />
       </section>
-      <section className="PeoplesContainer">
+      <section className="PeoplesContainer" id="notre-equipe">
         <h2 className="Title">Notre équipe</h2>
         <p>Une équipe d’experts dédiés à l’ogranisation de vos événements</p>
         <div className="ListContainer">
@@ -116,13 +132,20 @@ const Page = () => {
     <footer className="row">
       <div className="col presta">
         <h3>Notre derniére prestation</h3>
-        <EventCard
-          imageSrc={last?.cover}
-          title={last?.title}
-          date={new Date(last?.date)}
-          small
-          label="boom"
-        />
+        {last && last.cover && last.title && last.date && last.type && (
+          <Modal key={last.id} Content={<ModalEvent event={last} />}>
+            {({ setIsOpened }) => (
+              <EventCard
+                imageSrc={last?.cover}
+                title={last?.title}
+                date={new Date(last?.date)}
+                small
+                label={last.type}
+                onClick={() => setIsOpened(true)}
+              />
+            )}
+          </Modal>
+        )}
       </div>
       <div className="col contact">
         <h3>Contactez-nous</h3>
@@ -154,7 +177,7 @@ const Page = () => {
         </p>
       </div>
     </footer>
-  </>
+  </>)
 }
 
 export default Page;

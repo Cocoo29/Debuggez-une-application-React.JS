@@ -19,17 +19,13 @@ import { useData } from "../../contexts/DataContext";
 
 const Page = () => {
   const { data, error } = useData();
-  let last = {};
 
-  if (data) {
-    const byDateDesc = data?.events?.sort((evtA, evtB) =>
+  // Utilisation de la déstructuration des tableaux
+  const [last] = (data?.events || []).sort((evtA, evtB) =>
     new Date(evtA.date) < new Date(evtB.date) ? 1 : -1
-    );
-    last = byDateDesc[0];
-  } else if (error) {
-    return <p>Une erreur s&apos;est produite lors du chargement des données: {error}</p>
-  }
+  );
 
+  
   return (<>
     <header>
       <Menu />
@@ -153,25 +149,26 @@ const Page = () => {
         <div>01 23 45 67 89</div>
         <div>contact@724events.com</div>
         <div>
-          <a href="#twitch">
-            <Icon name="twitch" />
-          </a>
-          <a href="#facebook">
-            <Icon name="facebook" />
-          </a>
-          <a href="#twitter">
-            <Icon name="twitter" />
-          </a>
-          <a href="#youtube">
-            <Icon name="youtube" />
-          </a>
+        <a href="#twitch" aria-label="Lien vers Twitch">
+  <Icon name="twitch" />
+</a>
+<a href="#facebook" aria-label="Lien vers Facebook">
+  <Icon name="facebook" />
+</a>
+<a href="#twitter" aria-label="Lien vers Twitter">
+  <Icon name="twitter" />
+</a>
+<a href="#youtube" aria-label="Lien vers YouTube">
+  <Icon name="youtube" />
+</a>
+
         </div>
       </div>
       <div className="col description">
         <Logo size="large" />
         <p>
           Une agence événementielle propose des prestations de service
-          spécialisées dans la conception et l&apos;organisation de divers événements
+          spécialisées dans la conception et l’organisation de divers événements
           tels que des événements festifs, des manifestations sportives et
           culturelles, des événements professionnels
         </p>

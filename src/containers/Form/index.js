@@ -7,7 +7,7 @@ import Button, { BUTTON_TYPES } from "../../components/Button";
 const mockContactApi = () => new Promise((resolve) => { setTimeout(resolve, 1000); })
 
 
-const Form = ({ onSuccess = () => null, onError = () => null }) => {
+const Form = ({ onSuccess = () => {}, onError = () => {} }) =>{
   const [sending, setSending] = useState(false);
 
   const sendContact = useCallback(

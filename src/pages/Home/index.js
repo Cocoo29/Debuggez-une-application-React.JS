@@ -18,12 +18,13 @@ import ModalEvent from "../../containers/ModalEvent";
 import { useData } from "../../contexts/DataContext";
 
 const Page = () => {
-  const { data, error } = useData();
+  const { data } = useData();
 
   // Utilisation de la déstructuration des tableaux
   const [last] = (data?.events || []).sort((evtA, evtB) =>
-    new Date(evtA.date) < new Date(evtB.date) ? 1 : -1
+      new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
   );
+
 
   
   return (<>
@@ -115,7 +116,7 @@ const Page = () => {
               </p>
             </div>
           }
-        >
+         opened>
           {({ setIsOpened }) => (
             <Form
               onSuccess={() => setIsOpened(true)}

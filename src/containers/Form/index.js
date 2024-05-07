@@ -1,23 +1,24 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Field, { FIELD_TYPES } from "../../components/Field";
 import Select from "../../components/Select";
 import Button, { BUTTON_TYPES } from "../../components/Button";
 
-const mockContactApi = () => new Promise((resolve) => { setTimeout(resolve, 1000); })
+const mockContactApi = () => new Promise((resolve) => { setTimeout(() => resolve(), 1000); })
 
-
-const Form = ({ onSuccess = () => {}, onError = () => {} }) =>{
+const Form = ({ onSuccess = () => {}, onError = () => {} }) => {
   const [sending, setSending] = useState(false);
+  const [success, setSuccess] = useState(false); // Nouvel état pour suivre l'état de succès
 
   const sendContact = useCallback(
     async (evt) => {
       evt.preventDefault();
       setSending(true);
-      // We try to call mockContactApi
+    
       try {
         await mockContactApi();
         setSending(false);
+        setSuccess(true); // Marquer le succès après l'envoi réussi
         onSuccess(); // Call onSuccess callback upon successful submission
       } catch (err) {
         setSending(false);
@@ -26,6 +27,22 @@ const Form = ({ onSuccess = () => {}, onError = () => {} }) =>{
     },
     [onSuccess, onError]
   );
+
+  useEffect(() => {
+    const sendingState = localStorage.getItem("sending");
+    if (sendingState === "true") {
+      setSending(true);
+      localStorage.removeItem("sending");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (sending) {
+      localStorage.setItem("sending", "true");
+    } else {
+      localStorage.removeItem("sending");
+    }
+  }, [sending]);
 
   return (
     <form onSubmit={sendContact}>
@@ -53,6 +70,9 @@ const Form = ({ onSuccess = () => {}, onError = () => {} }) =>{
           />
         </div>
       </div>
+      {success && ( // Afficher le message de succès uniquement lorsque success est vrai
+        <div className="success-message">Message envoyé avec succès!</div>
+      )}
     </form>
   );
 };

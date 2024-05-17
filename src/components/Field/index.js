@@ -47,11 +47,5 @@ Field.propTypes = {
   placeholder: PropTypes.string,
 };
 
-Field.defaultProps = {
-  type: "text",
-  label: "Default Label",
-  name: "field-name",
-  placeholder: "",
-};
-
 export default Field;
+

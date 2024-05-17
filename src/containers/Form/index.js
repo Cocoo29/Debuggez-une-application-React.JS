@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useCallback, useEffect, useState } from "react";
 import Field, { FIELD_TYPES } from "../../components/Field";
 import Select from "../../components/Select";
 import Button, { BUTTON_TYPES } from "../../components/Button";
@@ -80,11 +80,6 @@ const Form = ({ onSuccess = () => {}, onError = () => {} }) => {
 Form.propTypes = {
   onError: PropTypes.func,
   onSuccess: PropTypes.func,
-};
-
-Form.defaultProps = {
-  onError: () => null,
-  onSuccess: () => null,
 };
 
 export default Form;

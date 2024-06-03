@@ -17,7 +17,6 @@ const Page = () => {
   const [success, setSuccess] = useState(false);
   const { data } = useData();
 
-  // Trier les événements par date et sélectionner le plus récent
   const last = data?.events
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 1)[0];
